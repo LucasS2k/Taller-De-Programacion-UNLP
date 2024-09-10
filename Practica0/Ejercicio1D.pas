@@ -13,10 +13,6 @@ randomize;
  end
 end;
 begin
-      {Elige una semilla distinta cada vez que se ejecuta el programa.}
-                {La semilla sirve para generar series de números aleatorios distintos.}
-                {Sin la llamada al procedimiento randomize, en todas las ejecuciones
-                del programa se elige siempre la misma serie de números aleatorios.}
      writeln('Ingrese la cantidad de numeros a generar');
      ReadLn(N);
      writeln('Ingrese el primer parametro');
