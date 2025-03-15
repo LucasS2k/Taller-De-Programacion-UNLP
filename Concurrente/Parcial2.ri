@@ -1,0 +1,101 @@
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso recorrerFlores(ES flores: numero)
+  comenzar
+    repetir 9
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor
+        flores:=flores+1
+      mover
+  fin
+  proceso recorrerPapeles(ES papeles:numero; E av:numero; E ca:numero)
+  comenzar
+    Pos(av,ca)
+    repetir 9
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+        papeles:=papeles+1
+      mover
+  fin
+areas
+  AreaJefe: AreaP(1,1,1,1)
+  Area1:AreaP(5,1,5,10)
+  Area2: AreaP(6,1,6,10)
+  Area3:AreaP(7,1,7,10)
+robots
+  robot robot1
+  variables
+    flores,id,papeles,av,ca:numero
+    continuar: boolean
+  comenzar
+    flores:=0
+    papeles:=0
+    continuar:=F
+    av:=PosAv
+    ca:=PosCa
+    RecibirMensaje(id,rj)
+    recorrerFlores(flores)
+    EnviarMensaje(id,rj)
+    EnviarMensaje(flores,rj)
+    RecibirMensaje(continuar,rj)
+    si(continuar)
+      recorrerPapeles(papeles,av,ca)
+    EnviarMensaje(id,rj)
+  fin
+  robot robotJefe
+  variables
+    total1,total2,total3,id:numero
+  comenzar
+    total1:=0
+    total2:=0
+    total3:=0
+    identificar
+    repetir 3
+      RecibirMensaje(id,*)
+      si(id=1)
+        RecibirMensaje(total1,r1)
+      sino 
+        si (id=2)
+          RecibirMensaje(total2,r2)
+        sino
+          si (id=3)
+            RecibirMensaje(total3,r3)
+    si(total1>total3) & (total2>total3)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(F,r3)
+    sino
+      si(total2>total1) & (total3>total1)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(V,r3)
+        EnviarMensaje(F,r1)
+      sino 
+        si(total3>total2) & (total1>total2)
+          EnviarMensaje(V,r1)
+          EnviarMensaje(V,r3)
+          EnviarMensaje(F,r2)
+    RecibirMensaje(id,*)
+    Informar(id)
+    RecibirMensaje(id,*)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  rj: robotJefe
+comenzar
+  AsignarArea(rj,AreaJefe)
+  AsignarArea(r1,Area1)
+  AsignarArea(r2,Area2)
+  AsignarArea(r3,Area3)
+  Iniciar(rj, 1,1)
+  Iniciar(r1,5,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,7,1)
+fin

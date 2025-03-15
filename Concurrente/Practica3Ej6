@@ -1,0 +1,55 @@
+programa ejemplo
+procesos
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+areas
+  Area1: AreaPC(2,2,15,15)
+  Area2: AreaPC(1,20,100,22)
+  AreaJefe: AreaP(1,1,1,1)
+robots
+  robot robot1
+  variables
+    av,ca,flores: numero
+  comenzar
+    flores:=0
+    repetir 4
+      repetir 6 
+        juntarFlores(flores)
+        mover
+      derecha
+    EnviarMensaje(flores,rj)
+    RecibirMensaje(av, rj)
+    RecibirMensaje(ca,rj)
+    Pos(av,ca)
+  fin
+  robot robot2
+  variables
+    av,ca,flores,papeles:numero
+  comenzar
+    repetir 4
+      repetir 10
+        juntarFlores(flores)
+        juntarPapeles(papeles)
+        mover
+      derecha
+  fin
+variables
+  r1:robot1
+  r2:robot2
+  r3:robot3
+  rj:jefe
+comenzar
+  AsignarArea(r1,Area1)
+  AsignarArea(r1,Area2)
+  iniciar(r1,2,2)
+fin

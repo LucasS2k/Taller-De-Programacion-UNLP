@@ -1,0 +1,98 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso depositarPapeles
+  comenzar
+    repetir 5
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+  fin
+areas
+  areaAv5: AreaP(5,1,5,100)
+  areaAv10: AreaP(10,1,10,100)
+  areaDeposito: AreaC(50,50,50,50)
+  areaConsumidor1: AreaP(11,1,11,1)
+  areaConsumidor2: AreaP(12,1,12,1)
+robots
+  robot productor
+  variables
+    papelesActu,av,ca:numero  
+    puedo:boolean  
+  comenzar
+    puedo:=V
+    papelesActu:=0
+    av:= PosAv
+    mientras(puedo)
+      si(HayPapelEnLaEsquina)
+        tomarPapel
+        papelesActu:=papelesActu+1
+        si(papelesActu= 5)
+          ca:=PosCa
+          BloquearEsquina(50,50)
+          Pos(50,50)
+          depositarPapeles
+          Pos(av,ca)
+          LiberarEsquina(50,50)
+      sino
+        si(PosCa=100)
+          puedo:=F
+        sino
+          mover     
+  fin
+  robot consumidor
+  variables
+    papeles,intentos,cantidad,av,ca:numero
+  comenzar
+    Random(cantidad,2,5)
+    av:=PosAv
+    ca:=PosCa
+    mientras(intentos<8)
+      papeles:=0
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      mientras(HayPapelEnLaEsquina) & (papeles<cantidad)  
+        tomarPapel
+        papeles:=papeles+1
+      si(papeles < cantidad)
+        repetir papeles
+          depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(50,50)
+      si(papeles= cantidad)
+        pos(av,ca)
+        LiberarEsquina(50,50)
+        repetir papeles
+          depositarPapel
+        intentos:=0
+      sino
+        intentos:=intentos+1  
+  fin
+variables
+  r1:productor
+  r2:productor
+  r3:consumidor
+  r4:consumidor
+comenzar
+  AsignarArea(r1,areaAv5)
+  AsignarArea(r2,areaAv10)
+  AsignarArea(r1,areaDeposito)
+  AsignarArea(r2,areaDeposito)
+  AsignarArea(r3,areaDeposito)
+  AsignarArea(r4,areaDeposito)
+  AsignarArea(r3,areaConsumidor1)
+  AsignarArea(r4,areaConsumidor2)
+  Iniciar(r1,5,1)
+  Iniciar(r2,10,1)
+  Iniciar(r3,11,1)
+  Iniciar(r4,12,1)
+fin

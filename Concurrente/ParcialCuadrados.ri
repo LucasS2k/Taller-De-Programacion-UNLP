@@ -1,0 +1,102 @@
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso juntarFlores(ES flores:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso cuadrado(E lado:numero; ES flores:numero)
+  comenzar
+    repetir 4
+      repetir lado
+        mover
+        juntarFlores(flores)
+      derecha
+  fin
+  proceso recorrerAvenida(E numAv: numero)
+  comenzar
+    Pos(numAv, 1)
+    repetir 99
+      mover
+  fin
+areas
+  deposito: AreaC(50,50,50,50)
+  AreaJefe:AreaP(22,1,22,1)
+  Area1:AreaP(1,1,6,17)
+  Area2:AreaP(8,1,13,17)
+  Area3:AreaP(15,1,20,17)
+robots
+  robot robot1
+  variables
+    flores,lado,av,ca,id:numero
+  comenzar
+    flores:=0
+    av:=PosAv
+    RecibirMensaje(id,rj)
+    repetir 3
+      EnviarMensaje(id,rj)
+      RecibirMensaje(lado,rj)
+      cuadrado(lado,flores)
+      ca:=PosCa+lado+1
+      Pos(av,ca)
+    av:=PosAv
+    ca:=PosCa
+    mientras(HayFlorEnLaBolsa)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos(av,ca)
+      LiberarEsquina(50,50)   
+    EnviarMensaje(id,rj)
+  fin
+  robot robotJefe
+  variables
+    lado,id,flores:numero
+  comenzar
+    flores:=0
+    identificar
+    repetir 9
+      RecibirMensaje(id,*)
+      si(id=1)
+        Random(lado,1,5)
+        EnviarMensaje(lado,r1)
+      sino
+        si (id=2)
+          Random(lado,1,5)
+          EnviarMensaje(lado,r2)
+        sino
+          Random(lado,1,5)
+          EnviarMensaje(lado,r3)
+    repetir 3
+      RecibirMensaje(id,*)
+    Pos(50,50)
+    mientras(HayFlorEnLaEsquina)
+      juntarFlores(flores)
+    Informar(flores) 
+  fin
+variables
+  r1: robot1
+  r2:robot1
+  r3:robot1
+  rj:robotJefe
+comenzar
+  AsignarArea(r1,Area1)
+  AsignarArea(r1,deposito)
+  AsignarArea(r2,Area2)
+  AsignarArea(r2,deposito)
+  AsignarArea(r3,Area3)
+  AsignarArea(r3,deposito)
+  AsignarArea(rj,AreaJefe)
+  AsignarArea(rj,deposito)
+  Iniciar(r1,1,1)
+  Iniciar(r2,8,1)
+  Iniciar(r3,15,1)
+  Iniciar(rj,22,1)
+fin

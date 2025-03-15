@@ -1,0 +1,119 @@
+programa ejemplo
+procesos
+  proceso dejarPapeles(E av:numero;E ca:numero)
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      BloquearEsquina(99,99)
+      Pos(99,99)
+      depositarPapel
+      Pos(av,ca)
+      LiberarEsquina(99,99)
+  fin
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarPapeles(ES esquinas:numero)
+  comenzar
+    si(HayPapelEnLaEsquina)
+      esquinas:=esquinas+1
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+  fin
+  proceso altoEsc(ES esquinas:numero)
+  variables
+    alto,av,ca:numero
+  comenzar
+    Random(alto,1,3)
+    repetir alto
+      juntarPapeles(esquinas)
+      mover
+    av:=PosAv
+    ca:=PosCa
+    dejarPapeles(av,ca)
+    
+  fin
+  proceso anchoEsc(ES esquinas:numero)
+  variables
+    ancho,av,ca:numero
+  comenzar
+    Random(ancho,2,4)
+    repetir ancho
+      juntarPapeles(esquinas)
+      mover
+    juntarPapeles(esquinas)
+    av:=PosAv
+    ca:=PosCa
+    dejarPapeles(av,ca)
+  fin
+areas
+  Area1: AreaP(2,1,18,13)
+  Area2: AreaP(32,1,48,13)
+  Area3:AreaP(62,1,78,13)
+  AreaJefe:AreaP(1,1,1,1)
+  deposito:AreaC(99,99,99,99)
+robots
+  robot robot1
+  variables
+    ancho,alto,esquinas,av,ca,id:numero
+    sigo:boolean
+  comenzar
+    RecibirMensaje(id,rj)
+    esquinas:=0
+    repetir 4
+      altoEsc(esquinas)
+      derecha
+      anchoEsc(esquinas)
+      izquierda
+      EnviarMensaje(id,rj)
+      RecibirMensaje(sigo,rj)
+    EnviarMensaje(esquinas,rj)   
+  fin
+  robot robotJefe
+  variables
+    id,totalEsquinas,esquinas:numero
+    continuar:boolean
+  comenzar
+    totalEsquinas:=0
+    continuar:=V
+    identificar
+    repetir 4
+      repetir 3
+        RecibirMensaje(id,*)
+      EnviarMensaje(continuar,r1)
+      EnviarMensaje(continuar,r2)
+      EnviarMensaje(continuar,r3)
+    repetir 3
+      RecibirMensaje(esquinas,*)
+      totalEsquinas:=totalEsquinas+esquinas
+    Pos(99,99)
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+    Informar(totalEsquinas)
+  fin
+variables
+  r1:robot1
+  r2:robot1
+  r3:robot1
+  rj:robotJefe
+comenzar
+  AsignarArea(r1,Area1)
+  AsignarArea(r2,Area2)
+  AsignarArea(r3,Area3)
+  AsignarArea(rj,AreaJefe)
+  AsignarArea(r1,deposito)
+  AsignarArea(r2,deposito)
+  AsignarArea(r3,deposito)
+  AsignarArea(rj,deposito)
+  Iniciar(rj,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,32,1)
+  Iniciar(r3,62,1)  
+fin

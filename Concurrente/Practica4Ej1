@@ -1,0 +1,145 @@
+programa ejemplo
+procesos
+  proceso asignarID
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso recibirCalles(E id:numero ES av:numero ES ca:numero)
+  comenzar
+    si(id =1)
+      RecibirMensaje(av,r1)
+      RecibirMensaje(ca,r1)
+    sino
+      si (id = 2)
+        RecibirMensaje(av,r2)
+        RecibirMensaje(ca,r2)
+      sino
+        si(id=3)
+          RecibirMensaje(av,r3)
+          RecibirMensaje(ca,r3)
+  fin
+  proceso enviarCalles(E id:numero E av:numero E ca:numero)
+  comenzar
+    si(id =1)
+      EnviarMensaje(av,r1)
+      EnviarMensaje(ca,r1)
+    sino
+      si (id = 2)
+        EnviarMensaje(av,r2)
+        EnviarMensaje(ca,r2)
+      sino
+        si(id=3)
+          EnviarMensaje(av,r3)
+          EnviarMensaje(ca,r3)
+  fin
+  proceso recibirFlores(E id:numero ES cantFlores:numero)
+  comenzar
+    si(id =1)
+      RecibirMensaje(cantFlores,r1)
+    sino
+      si (id = 2)
+        RecibirMensaje(cantFlores,r2)
+      sino
+        si(id=3)
+          RecibirMensaje(cantFlores,r3)
+  fin
+  proceso enviarConfirmacion(E id: numero)
+  comenzar
+    si(id =1)
+      EnviarMensaje(V,r1)
+    sino
+      si (id = 2)
+        EnviarMensaje(V,r2)
+      sino
+        si(id=3)
+          EnviarMensaje(V,r3)
+  fin
+  proceso recibirFinalizacion(E id: numero; ES puede1: boolean; ES puede2:boolean;ES puede3:boolean)
+  comenzar
+    si(id =1)
+      puede1:=F
+    sino
+      si (id = 2)
+        puede2:=F
+      sino
+        si(id=3)
+          puede3:=F
+  fin
+areas
+  esquinaServidor: AreaP (100,100,100,100)
+  avenidaR1: AreaPC (1,1,1,100)
+  avenidaR2: AreaPC (2,1,2,100)
+  avenidaR3: AreaPC (3,1,3,100)
+robots
+  robot robotCliente
+  variables
+    peticion,av,ca,id,cantFlores:numero
+    puedo, confirmacion: boolean
+  comenzar
+    av:= PosAv
+    ca:=PosCa
+    puedo:=V
+    RecibirMensaje(id,rs)
+    EnviarMensaje(id,rs)
+    EnviarMensaje(av, rs)
+    EnviarMensaje(ca(+1),rs)
+    Random(peticion,1,4)
+    EnviarMensaje(peticion,rs)
+    mientras(puedo)
+      RecibirMensaje(puedo, rs)
+      RecibirMensaje(av,rs)
+      RecibirMensaje(ca,rs)
+      Pos(av,ca)
+      mover
+      repetir peticion
+        si(HayFlorEnLaEsquina)
+          tomarFlor
+      si (PosCa > 100)
+        repetir cantFlores
+          mover
+          si(HayFlorEnLaBolsa){para que no tire error}
+            depositarFlor
+      sino 
+        puedo:=F
+        EnviarMensaje(id,rs) 
+  fin
+  robot robotServidor
+  variables
+    id,cantFlores,av,ca:numero
+    puede1,puede2,puede3:boolean
+  comenzar
+    asignarID
+    puede1:=V
+    puede2:=V
+    puede3:=V
+    mientras puede1|puede2|puede3
+      RecibirMensaje(id,*)
+      recibirCalles(id,av,ca)
+      Pos(av,ca)
+      recibirFlores(id,cantFlores)
+      repetir cantFlores
+        si (HayFlorEnLaBolsa){para que no tire error}
+          depositarFlor
+      Pos(100,100)
+      enviarConfirmacion(id)
+      enviarCalles(id,av,ca)
+      recibirFinalizacion(id, puede1,puede2,puede3)
+  fin
+variables
+  r1,r2,r3: robotCliente
+  rs: robotServidor
+comenzar
+  AsignarArea(r1, avenidaR1)
+  AsignarArea(r2, avenidaR2)
+  AsignarArea(r3, avenidaR3)
+  AsignarArea(rs, avenidaR1)
+  AsignarArea(rs, avenidaR2)
+  AsignarArea(rs, avenidaR3)
+  AsignarArea(rs, esquinaServidor)
+  Iniciar(rs,100,100)
+  Iniciar(r1,1,1)
+  Iniciar(r2,2,1)
+  Iniciar(r3,3,1)
+fin

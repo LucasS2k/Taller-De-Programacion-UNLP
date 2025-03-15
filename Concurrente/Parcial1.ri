@@ -1,0 +1,121 @@
+programa ejemplo
+procesos
+  proceso identificar
+  variables
+    uno,dos,tres,cuatro:numero
+  comenzar
+    uno:=1
+    dos:=2
+    tres:=3
+    cuatro:=4
+    EnviarMensaje(uno,r1v)
+    EnviarMensaje(dos,r2v)
+    EnviarMensaje(tres,r1a)
+    EnviarMensaje(cuatro,r2a)
+  fin
+  proceso juntarFlor(ES flores:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapel(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+areas
+  AreaAzul:AreaPC(2,4,12,24)
+  AreaVerde:AreaPC(16,4,26,24)
+  AreaJefe:AreaP(100,100,100,100)
+robots
+  robot robotCYF
+  variables
+    ca,av,flores,id:numero
+  comenzar
+    flores:=0
+    derecha
+    ca:=PosCa
+    RecibirMensaje(id,rj)
+    repetir 4
+      juntarFlor(flores)
+      mover
+    av:=PosAv+1
+    BloquearEsquina(av,ca)
+    mover
+    juntarFlor(flores)
+    mover
+    LiberarEsquina(av,ca)
+    juntarFlor(flores)
+    repetir 4
+      mover
+      juntarFlor(flores)
+    EnviarMensaje(id,rj)
+    EnviarMensaje(flores,rj)    
+  fin
+  robot robotAYP
+  variables
+    id,ca,av,papeles:numero
+  comenzar
+    papeles:=0
+    av:=PosAv
+    repetir 7
+      mover
+      juntarPapel(papeles)
+    ca:=PosCa+1
+    BloquearEsquina(av,ca)
+    mover
+    juntarPapel(papeles)
+    mover
+    LiberarEsquina(av,ca)
+    juntarPapel(papeles)
+    repetir 11
+      mover
+      juntarPapel(papeles)
+    EnviarMensaje(id,rj)
+    EnviarMensaje(papeles,rj)
+      
+  fin
+  robot robotJefe
+  variables
+    flores,papeles,totalA,totalV,id:numero
+  comenzar
+    identificar
+    totalV:=0
+    totalA:=0
+    repetir 4
+      RecibirMensaje(id,*)
+      si (id=1)
+        RecibirMensaje(flores,r1v)
+        totalV:=totalV+flores
+      sino
+        si(id=2)
+          RecibirMensaje(papeles,r2v)
+          totalV:=totalV+papeles
+        sino
+          si(id=3)
+            RecibirMensaje(flores,r1a)
+            totalA:=totalA+flores
+          sino
+            RecibirMensaje(papeles,r2a)
+            totalA:=totalA+papeles
+  fin
+variables
+  r1v: robotCYF
+  r1a: robotCYF
+  r2v: robotAYP
+  r2a: robotAYP
+  rj: robotJefe
+comenzar
+  AsignarArea(r1v,AreaVerde)
+  AsignarArea(r2v,AreaVerde)
+  AsignarArea(r1a,AreaAzul)
+  AsignarArea(r2a,AreaAzul)
+  AsignarArea(rj,AreaJefe)
+  Iniciar(rj,100,100)
+  Iniciar(r1a,2,12)
+  Iniciar(r2a,7,4)
+  Iniciar(r1v,16,12)
+  Iniciar(r2v,21,4)
+fin

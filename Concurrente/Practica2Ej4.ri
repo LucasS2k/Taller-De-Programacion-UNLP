@@ -1,0 +1,148 @@
+programa ejemplo
+procesos
+  proceso juntarAmbos(ES total: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      total:=total+1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      total:=total+1 
+  fin
+  proceso maximo(E t1:numero; E t2:numero; E t3:numero; E t4:numero; ES robotMax:numero)
+  variables
+    max: numero
+  comenzar
+    max:= -1
+    si(t1> max)
+      max:=t1
+      robotMax:=1
+    si(t2 > max)
+      max:=t2
+      robotMax:=2
+    si(t3>max)
+      max:=t3
+      robotMax:=3
+    si(t4>max)
+      max:=t4
+      robotMax:=4
+  fin
+  proceso acceso(ES total:numero)
+  variables
+    inicioAv, inicioCa, av,ca:numero
+  comenzar
+    inicioAv:= PosAv
+    inicioCa:= PosCa
+    Random(av,25,75)
+    Random(ca,25,75)
+    Pos(av,ca)
+    juntarAmbos(total)
+    Pos(inicioAv,inicioCa)
+  fin
+  proceso apagarRobots
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+  fin
+  proceso robotGanador (E id:numero; E ok: boolean)
+  comenzar
+    si (id = 1)
+      EnviarMensaje(ok, r1)
+    sino
+      si (id=2)
+        EnviarMensaje(ok, r2)
+      sino
+        si (id=3)
+          EnviarMensaje(ok, r3)
+        sino
+          EnviarMensaje(ok, r4)
+  fin
+  proceso inicializarTotales(ES t1:numero; ES t2:numero; ES t3:numero; ES t4:numero;)
+  variables 
+    t1,t2,t3,t4:numero
+  comenzar
+    t1:=0
+    t2:=0
+    t3:=0
+    t4:=0
+  fin
+areas
+  AreaJefe: AreaP(1,1,1,1)
+  AreaCuadrante: AreaPC(25,25,75,75)
+  AreaRobot1: AreaP(25,1,25,1)
+  AreaRobot2: AreaP(30,1,30,1)
+  AreaRobot3: AreaP(35,1,35,1)
+  AreaRobot4: AreaP(40,1,40,1)
+robots
+  robot tipoRecolector
+  variables
+    puedo, gane: boolean
+    total: numero
+  comenzar
+    RecibirMensaje(puedo, rj)
+    mientras(puedo)
+      RecibirMensaje(total,rj)
+      acceso(total)
+      EnviarMensaje(total, rj)
+      RecibirMensaje(puedo,rj)
+    RecibirMensaje(gane,rj)
+    si(gane)
+      Pos(50,50)
+  fin
+  robot jefe
+  variables
+    quienAccede,ID,t1,t2,t3,t4,max: numero
+  comenzar
+    inicializarTotales(t1,t2,t3,t4)
+    repetir 10
+      Random(quienAccede,3,4)
+      si(quienAccede = 1)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(t1,r1)
+        RecibirMensaje(t1,r1)
+      sino
+        si(quienAccede = 2)
+          EnviarMensaje(V,r2)
+          EnviarMensaje(t2,r2)
+          RecibirMensaje(t2,r2)
+        sino
+          si(quienAccede = 3)
+            EnviarMensaje(V,r3)
+            EnviarMensaje(t3,r3)
+            RecibirMensaje(t3,r3)
+          sino
+            si(quienAccede = 4)
+              EnviarMensaje(V,r4)
+              EnviarMensaje(t4,r4)
+              RecibirMensaje(t4,r4)
+    apagarRobots
+    maximo(t1,t2,t3,t4,max)
+    ID:=1
+    repetir 4
+      si(ID = max)
+        robotGanador(ID, V)
+      sino
+        ID:=ID+1
+    Informar(max)
+  fin
+variables
+  r1, r2, r3, r4: tipoRecolector
+  rj: jefe
+comenzar
+  AsignarArea(r1,AreaCuadrante)
+  AsignarArea(r1,AreaRobot1)
+  AsignarArea(r2,AreaCuadrante)
+  AsignarArea(r2,AreaRobot2)
+  AsignarArea(r3,AreaCuadrante)
+  AsignarArea(r3,AreaRobot3)
+  AsignarArea(r4,AreaCuadrante)
+  AsignarArea(r4,AreaRobot4)
+  AsignarArea(rj,AreaJefe)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+  Iniciar(rj,1,1)
+fin

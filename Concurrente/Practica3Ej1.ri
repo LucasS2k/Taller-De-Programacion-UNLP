@@ -1,0 +1,101 @@
+programa ejemplo
+procesos
+  proceso juntarFlor(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapel(ES papeles:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso juntarAmbos(ES total:numero; E veces: numero; E ID:numero)
+  variables
+    av,ca:numero
+    avIni,caIni:numero
+  comenzar
+    total:=0
+    avIni:=PosAv
+    caIni:=PosCa
+    repetir veces
+      si(ID = 5)
+        Random(av,1,5)
+        Random(ca,1,10)
+        BloquearEsquina(av,ca)
+        Pos(av,ca)
+        juntarFlor(total)
+        BloquearEsquina(10,10)
+        Pos(10,10)
+        LiberarEsquina(av,ca)
+        repetir total
+          si HayFlorEnLaBolsa
+            depositarFlor
+        Pos(avIni,caIni)
+        LiberarEsquina(10,10)
+        
+      sino
+        si(ID = 3)
+          Random(av,6,10)
+          Random(ca,1,9)
+          BloquearEsquina(av,ca)
+          Pos(av,ca)
+          juntarPapel(total)          
+          BloquearEsquina(10,10)
+          Pos(10,10)
+          LiberarEsquina(av,ca)
+          repetir total
+            si HayPapelEnLaBolsa
+              depositarPapel
+          Pos(avIni,caIni)
+          LiberarEsquina(10,10)
+          
+  fin
+areas
+  AreaFloreros: AreaPC(1,1,5,10)
+  AreaPapeleros: AreaPC(6,1,10,9)
+  InicioF1: AreaP(6,10,6,10)
+  InicioF2: AreaP(7,10,7,10)
+  InicioP1: AreaP(8,10,8,10)
+  InicioP2: AreaP(9,10,9,10)
+  AreaDeposito: AreaC(10,10,10,10)
+robots
+  robot florero
+  variables
+    total: numero
+  comenzar
+    total:=0
+    juntarAmbos(total,5,5)
+  fin
+  robot papelero
+  variables
+    total: numero
+  comenzar
+    total:=0
+    juntarAmbos(total,3,3)
+  fin
+variables
+  rp1: papelero
+  rp2: papelero
+  rf1: florero
+  rf2: florero
+comenzar
+  AsignarArea(rf1,InicioF1)
+  AsignarArea(rf1, AreaFloreros)
+  AsignarArea(rf1,AreaDeposito)
+  AsignarArea(rf2,InicioF2)
+  AsignarArea(rf2,AreaFloreros)
+  AsignarArea(rf2,AreaDeposito)
+  AsignarArea(rp1, InicioP1)
+  AsignarArea(rp1, AreaPapeleros)
+  AsignarArea(rp1, AreaDeposito)
+  AsignarArea(rp2, InicioP2)
+  AsignarArea(rp2, AreaPapeleros)
+  AsignarArea(rp2, AreaDeposito)
+  Iniciar(rf1,6,10)
+  Iniciar(rf2,7,10)
+  Iniciar(rp1,8,10)
+  Iniciar(rp2,9,10)
+fin

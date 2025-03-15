@@ -1,0 +1,74 @@
+programa practica
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3 
+      derecha
+  fin
+  proceso juntarPapel(ES papel: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      TomarPapel
+      papel:= papel+1
+  fin
+  proceso juntarFlor(ES flor: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      TomarFlor
+      flor:= flor+1
+  fin
+  proceso recorrerEscalon(E alto:numero; ES escalonesSup: numero)
+  variables
+    flores, papeles: numero
+  comenzar
+    flores:=0
+    papeles:=0
+    repetir alto
+      juntarPapel(papeles)
+      juntarFlor(flores)
+      mover
+    derecha
+    mover
+    izquierda
+    si(flores > papeles)
+      escalonesSup:= escalonesSup +1
+  fin
+areas
+  areaJefe: AreaP (1,1,1,1)
+  area1: AreaC (2,1,100,100)
+robots
+  robot robot1
+  variables
+    alto, cantEscalonesSup: numero
+  comenzar
+    cantEscalonesSup:=0
+    repetir 4
+      Random(alto,1,5)
+      recorrerEscalon(alto, cantEscalonesSup)
+      EnviarMensaje(cantEscalonesSup,rj)
+  fin
+  robot jefe
+  variables
+    total,Cant: numero
+  comenzar
+    total:=0
+    repetir 3
+      RecibirMensaje(Cant,*)
+      total:= total + Cant
+    Informar(total)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  rj: jefe
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area1)
+  AsignarArea(r3, area1)
+  AsignarArea(rj, areaJefe)
+  Iniciar(rj,1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+fin

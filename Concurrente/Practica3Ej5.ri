@@ -1,0 +1,83 @@
+programa ejemplo
+procesos
+  proceso maximo(ES id: numero; ES calle:numero)
+  variables
+    max: numero
+    maxId:numero
+  comenzar
+    max:=-1
+    maxId:=0
+    si(calle > max)
+      max:=calle
+      maxId:=calle
+  fin
+areas
+  AreaRecoleccion: AreaC (11,11,11,11)
+  Area1: AreaP(4,1,4,100)
+  Area2: AreaP(6,1,6,100)
+  Area3: AreaP(8,1,8,100)
+  Area4: AreaP(10,1,10,100)
+  AreaJefe: AreaP(100,100,100,100)
+robots
+  robot competidor
+  variables
+    id,avActual,caActual:numero
+    puedo: boolean
+  comenzar
+    RecibirMensaje(id,rj)
+    puedo:= V
+    avActual:=PosAv
+    caActual:=PosCa
+    mientras(puedo) & (PosCa < 100)
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      si(HayPapelEnLaEsquina)
+        tomarPapel
+      sino
+        puedo:=F
+      Pos(avActual,caActual)
+      LiberarEsquina(11,11)
+      si(puedo)
+        si(HayPapelEnLaBolsa)
+          depositarPapel
+        mover
+        caActual:=PosCa
+    EnviarMensaje(id, rj)
+    EnviarMensaje(caActual,rj)         
+  fin
+  robot jefe
+  variables
+    calle,id:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    repetir 4
+      RecibirMensaje(id,*)
+      RecibirMensaje(calle,*)
+      maximo(id,calle)
+    Informar(id,calle)
+  fin
+variables
+  r1: competidor
+  r2: competidor
+  r3: competidor
+  r4: competidor
+  rj: jefe
+comenzar
+  AsignarArea(rj,AreaJefe)
+  AsignarArea(r1,Area1)
+  AsignarArea(r2,Area2)
+  AsignarArea(r3,Area3)
+  AsignarArea(r4,Area4)
+  AsignarArea(r1,AreaRecoleccion)
+  AsignarArea(r2,AreaRecoleccion)
+  AsignarArea(r3,AreaRecoleccion)
+  AsignarArea(r4,AreaRecoleccion)
+  Iniciar(rj,100,100)
+  Iniciar(r1,4,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,8,1)
+  Iniciar(r4,10,1)
+fin
