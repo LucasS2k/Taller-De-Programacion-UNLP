@@ -24,18 +24,17 @@ for i:= 1 to 12 do
 v[i] := nil;
 end;
 
-procedure leerDatos(var r: atencion;var m: integer);
+procedure leerDatos(var r: atencion; var m: integer);
 var
-vec : array[1..5] of char = ('L','M','N','O','P');
+    vec: array[1..5] of char = ('L', 'M', 'N', 'O', 'P');
 begin
-writeln('ingrese el dni: ');
-r.dni := random (200);
-writeln('ingrese el dia (1 - 31): ');
-r.dia := random (31)+1;
-writeln('ingrese el diagnostico (l - p): ');
-r.diagnostico := vec[random(5)+1];
-writeln('ingrese el mes: ');
-m:= random(12)+1;
+    repeat
+        r.dni := random(199);
+    until r.dni <> 0;
+
+    r.dia := random(31) + 1;
+    r.diagnostico := vec[random(5)+1]; // Evitar índice fuera de rango
+    m := random(12) + 1;
 end;
 
 procedure cargarArbol(var a: arbol; r:atencion);
@@ -113,36 +112,48 @@ encontre := false;
   if (a^.dato.dni = dni) then 
  encontre := true
  else
- encontre:= encontre(a^.HD, dni) or encontre(a^.HD, dni);
+ encontre:= encontre(a^.HI, dni) or encontre(a^.HD, dni);
  end;
 end;
 
-procedure buscarPaciente (v: vector);
+procedure buscarPaciente(v: vector);
 var
-buscado: integer;
-i: integer;
+    buscado: integer;
+    i: integer;
+    encontrado: boolean;
 begin
- writeln('ingrese el dni del paciente a buscar: ');
- readln(buscado);
-  for i := 1 to 12 do begin
-  if( encontre(v[i],buscado)) then writeln(buscado,'encontrado')
-  else writeln( ' el paciente ' ,buscado, ' no fue atendido en el mes: ' , i)
- end;
+    writeln('Ingrese el DNI del paciente a buscar: ');
+    readln(buscado);
+    encontrado := false;
+    for i := 1 to 12 do
+    begin
+        if (encontre(v[i], buscado)) then
+        begin
+            writeln('El paciente ', buscado, ' fue atendido en el mes ', i);
+            encontrado := true;
+            break;
+        end;
+    end;
+    if not encontrado then
+        writeln('El paciente ', buscado, ' no fue atendido en ningún mes.');
 end;
 
 procedure ordenarvector(var v: vector; dimL:integer);
-var i,j,pos: integer;
-aux: vectorregistro;
+var
+    i, j, pos: integer;
+    aux: arbol;
 begin
- for i := 1 to (dimL-1) do begin
- pos:= i;
-  for j := (i+1) to dimL do begin
-   if (v[j] > v[pos]) then
-   pos:= j;
-   aux:= v[pos];
-   v[pos]:= v[i];
-   v[i]:= aux;
-   end; 
+    for i := 1 to (dimL - 1) do
+    begin
+        pos := i;
+        for j := (i + 1) to dimL do
+        begin
+            if (recorrerArbolContando(v[j]) > recorrerArbolContando(v[pos])) then
+                pos := j;
+        end;
+        aux := v[pos];
+        v[pos] := v[i];
+        v[i] := aux;
     end;
 end;
 var
